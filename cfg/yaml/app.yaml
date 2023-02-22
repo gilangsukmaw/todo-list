@@ -1,0 +1,17 @@
+app:
+  name: service-backend
+  port: 8081
+  read_time_out: 15
+  write_time_out: 15
+
+db:
+  host: localhost
+  port: 5432
+  db_name: pos-kopi # database name
+  username: postgres # database user
+  password: BZHnDem5mcbtJkk9YbZee787SyAFGy7x # database password
+  max_open: 10
+  max_idle: 10
+  timeout_second: 10
+  life_time_ms: 3 #minutes
+  charset: utf8
