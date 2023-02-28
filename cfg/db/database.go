@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	"go-fiber-v1/cfg/yaml"
 	"log"
@@ -15,18 +16,16 @@ type database struct {
 
 func NewDatabase(cfg *yaml.Config) database {
 	var (
-		username        = cfg.DB.Username
-		password        = cfg.DB.Password
-		host            = cfg.DB.Host
-		databaseName    = cfg.DB.DbName
+		dialect         = cfg.DB.Dialect
 		maxOpen         = cfg.DB.MaxOpen
 		maxIdle         = cfg.DB.MaxIdle
 		connMaxLifeTime = cfg.DB.LifeTimeMs
 	)
 
-	connStr := fmt.Sprintf(`postgresql://%s:%s@%s/%s?sslmode=disable`, username, password, host, databaseName)
+	connStr := ConnString(cfg)
+
 	// Connect to database
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open(dialect, connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,37 +38,18 @@ func NewDatabase(cfg *yaml.Config) database {
 	return database{Db: db}
 }
 
-func (db *database) QueryRow() {
+func ConnString(cfg *yaml.Config) string {
+	var (
+		dialect      = cfg.DB.Dialect
+		username     = cfg.DB.Username
+		password     = cfg.DB.Password
+		host         = cfg.DB.Host
+		databaseName = cfg.DB.DbName
+	)
 
+	if dialect == "mysql" {
+		return fmt.Sprintf(`%s:%s@tcp(%s:3306)/%s`, username, password, host, databaseName)
+	}
+
+	return fmt.Sprintf(`postgresql://%s:%s@%s/%s?sslmode=disable`, username, password, host, databaseName)
 }
-
-//
-//func DbConnect() {
-//
-//	db, err := sql.Open("mysql", "user7:s$cret@tcp(127.0.0.1:3306)/testdb")
-//	defer db.Close()
-//
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	res, err := db.Query("SELECT * FROM cities")
-//
-//	defer res.Close()
-//
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	for res.Next() {
-//
-//		var city City
-//		err := res.Scan(&city.Id, &city.Name, &city.Population)
-//
-//		if err != nil {
-//			log.Fatal(err)
-//		}
-//
-//		fmt.Printf("%v\n", city)
-//	}
-//}

@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"go-fiber-v1/cfg/db"
 	"go-fiber-v1/cfg/http"
 	"go-fiber-v1/cfg/yaml"
 	"go-fiber-v1/lib/logger"
@@ -22,22 +23,13 @@ func Start() {
 		panic(err)
 	}
 
-	//migrate := &cobra.Command{
-	//	Use:   "db:migrate",
-	//	Short: "Migrate",
-	//	Run: func(cmd *cobra.Command, args []string) {
-	//		command, _ := cmd.Flags().GetString("migrator")
-	//
-	//		if command == "up" {
-	//			db.MigratorUp(cfg)
-	//		} else if command == "down" {
-	//			db.MigratorUp(cfg)
-	//		}
-	//	},
-	//}
-	//
-	//migrate.PersistentFlags().String("migrator", "up", "migrate up")
-	//migrate.PersistentFlags().String("migrator", "down", "migrate down")
+	migrate := &cobra.Command{
+		Use:   "db:migrate",
+		Short: "Migrate",
+		Run: func(cmd *cobra.Command, args []string) {
+			db.DatabaseMigration(cfg, args)
+		},
+	}
 
 	cmd := []*cobra.Command{
 		{
@@ -50,7 +42,7 @@ func Start() {
 	}
 
 	rootCmd.AddCommand(cmd...)
-	//rootCmd.AddCommand(migrate)
+	rootCmd.AddCommand(migrate)
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
 	}

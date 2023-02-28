@@ -19,6 +19,7 @@ type App struct {
 }
 
 type DB struct {
+	Dialect       string `yaml:"dialect" json:"dialect"`
 	Host          string `yaml:"host" json:"host"`
 	Port          string `yaml:"port" json:"port"`
 	DbName        string `yaml:"db_name" json:"db_name"`
