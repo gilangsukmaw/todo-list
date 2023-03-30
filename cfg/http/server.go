@@ -3,8 +3,9 @@ package http
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"go-fiber-v1/cfg/yaml"
-	"go-fiber-v1/internal/router"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/router"
 	"log"
 	_ "net/http"
 	_ "net/http/pprof"
@@ -17,6 +18,15 @@ func Run(cfg *yaml.Config) {
 
 	// Fiber instance
 	app := fiber.New()
+
+	// Default config
+	app.Use(cors.New())
+
+	// Or extend your config for customization
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	//setup router
 	app.Mount("/", router.NewRouter(cfg))

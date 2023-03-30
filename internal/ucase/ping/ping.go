@@ -2,9 +2,9 @@ package ping
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"go-fiber-v1/cfg/yaml"
-	"go-fiber-v1/internal/server"
-	"go-fiber-v1/internal/ucase/contract"
+	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/server"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/contract"
 )
 
 type ping struct{}

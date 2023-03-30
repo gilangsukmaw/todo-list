@@ -1,3 +1,4 @@
 .idea
 cfg/yaml/app.yaml
 /gin-bin
+vendor

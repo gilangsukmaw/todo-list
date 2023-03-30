@@ -5,10 +5,10 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"go-fiber-v1/cfg/db"
-	"go-fiber-v1/cfg/http"
-	"go-fiber-v1/cfg/yaml"
-	"go-fiber-v1/lib/logger"
+	"gitlab.com/todo-list-app1/todo-list-backend/cfg/db"
+	"gitlab.com/todo-list-app1/todo-list-backend/cfg/http"
+	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	"gitlab.com/todo-list-app1/todo-list-backend/lib/logger"
 	"log"
 )
 

@@ -5,9 +5,10 @@ app:
   write_time_out: 15
 
 db:
+  dialect: postgres
   host: localhost
   port: 5432
-  db_name: pos-kopi # database name
+  db_name: todo-list # database name
   username: postgres # database user
   password: BZHnDem5mcbtJkk9YbZee787SyAFGy7x # database password
   max_open: 10

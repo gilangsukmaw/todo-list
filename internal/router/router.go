@@ -2,14 +2,14 @@ package router
 
 import (
 	"github.com/gofiber/fiber/v2"
-	dbConn "go-fiber-v1/cfg/db"
-	"go-fiber-v1/cfg/yaml"
-	"go-fiber-v1/internal/middlewares"
-	repositories "go-fiber-v1/internal/repositories/user"
-	"go-fiber-v1/internal/server"
-	"go-fiber-v1/internal/ucase/contract"
-	"go-fiber-v1/internal/ucase/ping"
-	"go-fiber-v1/internal/ucase/user"
+	dbConn "gitlab.com/todo-list-app1/todo-list-backend/cfg/db"
+	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/middlewares"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/repositories"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/server"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/contract"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/ping"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/todos"
 )
 
 func NewRouter(cfg *yaml.Config) *fiber.App {
@@ -19,7 +19,8 @@ func NewRouter(cfg *yaml.Config) *fiber.App {
 
 	//repositories
 	var (
-		userRepo = repositories.NewUser(db.Db)
+		//userRepo = repositories.NewUser(db.Db)
+		todoRepo = repositories.NewTodo(db.Db)
 	)
 
 	//middlewares
@@ -30,8 +31,12 @@ func NewRouter(cfg *yaml.Config) *fiber.App {
 
 	//ucase
 	var (
-		pingUcase  = ping.NewPing()
-		usersUcase = user.NewUsers(userRepo)
+		pingUcase       = ping.NewPing()
+		AllTodosUcase   = todos.NewAllTodos(todoRepo)
+		CreateTodoUcase = todos.NewCreateTodo(todoRepo)
+		DoneTodoUcase   = todos.NewDoneTodos(todoRepo)
+		UndoneTodoUcase = todos.NewUndoneTodos(todoRepo)
+		DeleteTodoUcase = todos.NewDeleteTodos(todoRepo)
 	)
 
 	//group
@@ -40,7 +45,14 @@ func NewRouter(cfg *yaml.Config) *fiber.App {
 
 	router.Get("/ping/:param", handler(cfg, pingUcase, tesMdwr, tesMdwr2))
 
-	v1.Get("/users", handler(cfg, usersUcase))
+	//v1.Get("/users", handler(cfg, usersUcase))
+
+	//todo crud
+	v1.Get("/todos", handler(cfg, AllTodosUcase))
+	v1.Post("/todos", handler(cfg, CreateTodoUcase))
+	v1.Put("/todos/done/:id", handler(cfg, DoneTodoUcase))
+	v1.Put("/todos/undone/:id", handler(cfg, UndoneTodoUcase))
+	v1.Delete("/todos/delete/:id", handler(cfg, DeleteTodoUcase))
 
 	return router
 }

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	"github.com/pressly/goose/v3"
-	"go-fiber-v1/cfg/yaml"
+	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
 	"log"
 )
 

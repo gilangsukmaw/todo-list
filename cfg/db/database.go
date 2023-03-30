@@ -5,7 +5,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
-	"go-fiber-v1/cfg/yaml"
+	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
 	"log"
 	"time"
 )
