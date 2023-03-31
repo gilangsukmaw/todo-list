@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	cfg "gitlab.com/todo-list-app1/todo-list-backend/cfg/env"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/entity"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/helper"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/presentations"
@@ -25,7 +25,7 @@ func NewCreateTodo(
 	return &createTodo{todoRepo: todoRepo}
 }
 
-func (u *createTodo) Serve(dctx *fiber.Ctx, cfg *yaml.Config) server.Response {
+func (u *createTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 	var (
 		ctx   = dctx.Context()
 		param = presentations.CreateTodoParam{}

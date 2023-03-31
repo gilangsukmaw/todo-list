@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/gofiber/fiber/v2"
 	dbConn "gitlab.com/todo-list-app1/todo-list-backend/cfg/db"
-	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	cfg "gitlab.com/todo-list-app1/todo-list-backend/cfg/env"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/middlewares"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/repositories"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/server"
@@ -12,7 +12,7 @@ import (
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/todos"
 )
 
-func NewRouter(cfg *yaml.Config) *fiber.App {
+func NewRouter(cfg *cfg.Config) *fiber.App {
 	router := fiber.New()
 
 	db := dbConn.NewDatabase(cfg)
@@ -57,7 +57,7 @@ func NewRouter(cfg *yaml.Config) *fiber.App {
 	return router
 }
 
-func handler(cfg *yaml.Config, ucase contract.UseCase, mdws ...Middlewares) fiber.Handler {
+func handler(cfg *cfg.Config, ucase contract.UseCase, mdws ...Middlewares) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		for _, i := range mdws {
 			middlewaresFunc := i(c, cfg)
@@ -72,4 +72,4 @@ func handler(cfg *yaml.Config, ucase contract.UseCase, mdws ...Middlewares) fibe
 	}
 }
 
-type Middlewares func(c *fiber.Ctx, cfg *yaml.Config) server.Response
+type Middlewares func(c *fiber.Ctx, cfg *cfg.Config) server.Response

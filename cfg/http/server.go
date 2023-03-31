@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	cfg "gitlab.com/todo-list-app1/todo-list-backend/cfg/env"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/router"
 	"log"
 	_ "net/http"
@@ -13,7 +13,7 @@ import (
 	"os/signal"
 )
 
-func Run(cfg *yaml.Config) {
+func Run(cfg *cfg.Config) {
 	//start server
 
 	// Fiber instance

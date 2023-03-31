@@ -5,7 +5,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
-	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	cfg "gitlab.com/todo-list-app1/todo-list-backend/cfg/env"
 	"log"
 	"time"
 )
@@ -14,12 +14,12 @@ type database struct {
 	Db *sql.DB
 }
 
-func NewDatabase(cfg *yaml.Config) database {
+func NewDatabase(cfg *cfg.Config) database {
 	var (
-		dialect         = cfg.DB.Dialect
-		maxOpen         = cfg.DB.MaxOpen
-		maxIdle         = cfg.DB.MaxIdle
-		connMaxLifeTime = cfg.DB.LifeTimeMs
+		dialect         = cfg.DatabaseDialect
+		maxOpen         = cfg.DatabaseMaxOpen
+		maxIdle         = cfg.DatabaseMaxIdle
+		connMaxLifeTime = cfg.DatabaseLifeTimeMs
 	)
 
 	connStr := ConnString(cfg)
@@ -38,13 +38,13 @@ func NewDatabase(cfg *yaml.Config) database {
 	return database{Db: db}
 }
 
-func ConnString(cfg *yaml.Config) string {
+func ConnString(cfg *cfg.Config) string {
 	var (
-		dialect      = cfg.DB.Dialect
-		username     = cfg.DB.Username
-		password     = cfg.DB.Password
-		host         = cfg.DB.Host
-		databaseName = cfg.DB.DbName
+		dialect      = cfg.DatabaseDialect
+		username     = cfg.DatabaseUsername
+		password     = cfg.DatabasePassword
+		host         = cfg.DatabaseHost
+		databaseName = cfg.DatabaseName
 	)
 
 	if dialect == "mysql" {
