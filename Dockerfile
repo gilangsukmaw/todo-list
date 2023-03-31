@@ -1,22 +1,16 @@
-# Use an official Golang runtime as a parent image
-FROM golang:latest
+FROM golang:alpine
 
-# Set the working directory to /app
+RUN apk update && apk add --no-cache git
+
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+COPY . .
 
-# Download and install any required dependencies
 RUN go mod tidy
 
-# Build the Go app
-RUN go build -o main .
+RUN go build -o binary
 
-# Expose port 8080 for incoming traffic
-EXPOSE 8081
 
-# Define the command to run the app when the container starts
-ENTRYPOINT ["/app/main"]
+ENTRYPOINT ["/app/binary"]
 
 CMD ["http"]
