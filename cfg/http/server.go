@@ -41,7 +41,7 @@ func Run(cfg *cfg.Config) {
 
 	// ...
 
-	if err := app.Listen(":8081"); err != nil {
+	if err := app.Listen(fmt.Sprintf(`:%v`, cfg.Port)); err != nil {
 		log.Panic(err)
 	}
 }
