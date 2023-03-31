@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
--- CREATE TYPE status AS ENUM ('done', 'on-progress');
+CREATE TYPE status AS ENUM ('done', 'on-progress');
 
 
 CREATE TABLE todos (
