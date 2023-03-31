@@ -2,8 +2,8 @@ package cfg
 
 import (
 	"fmt"
-	"github.com/caarlos0/env/v7"
-	"github.com/joho/godotenv"
+	"os"
+	"strconv"
 )
 
 type Config struct {
@@ -29,15 +29,63 @@ type Config struct {
 }
 
 func NewDotEnvConfig() (*Config, error) {
-	var config Config
+	//var config Config
 
-	err := godotenv.Load(".env")
+	//err := godotenv.Load(".env")
+	//if err != nil {
+	//	panic(fmt.Sprintf(`error loading env --> %v`, err))
+	//}
+	//
+	//if err := env.Parse(&config); err != nil {
+	//	fmt.Printf("%+v\n", err)
+	//}
+
+	readTimeOut, err := strconv.Atoi(os.Getenv("APP_READ_TIMEOUT"))
 	if err != nil {
-		panic(fmt.Sprintf(`error loading env --> %v`, err))
+		panic(err)
 	}
 
-	if err := env.Parse(&config); err != nil {
-		fmt.Printf("%+v\n", err)
+	writeTimeOut, err := strconv.Atoi(os.Getenv("APP_READ_TIMEOUT"))
+	if err != nil {
+		panic(err)
+	}
+
+	dbMaxOpen, err := strconv.Atoi(os.Getenv("DB_MAX_OPEN"))
+	if err != nil {
+		panic(err)
+	}
+
+	dbMaxIdle, err := strconv.Atoi(os.Getenv("DB_MAX_IDLE"))
+	if err != nil {
+		panic(err)
+	}
+
+	dbTimeOutSecond, err := strconv.Atoi(os.Getenv("DB_TIMEOUT_SECOND"))
+	if err != nil {
+		panic(err)
+	}
+
+	dbLifeTimeMs, err := strconv.Atoi(os.Getenv("DB_LIFE_TIME_MS"))
+	if err != nil {
+		panic(err)
+	}
+
+	config := Config{
+		Name:                  os.Getenv("APP_NAME"),
+		Port:                  os.Getenv("APP_PORT"),
+		ReadTimeOut:           readTimeOut,
+		WriteTimeOut:          writeTimeOut,
+		DatabaseDialect:       os.Getenv("DB_DIALECT"),
+		DatabaseHost:          os.Getenv("DB_HOST"),
+		DatabaseDbPort:        os.Getenv("DB_PORT"),
+		DatabaseName:          os.Getenv("DB_DBNAME"),
+		DatabaseUsername:      os.Getenv("DB_USER"),
+		DatabasePassword:      os.Getenv("DB_PASSWORD"),
+		DatabaseMaxOpen:       dbMaxOpen,
+		DatabaseMaxIdle:       dbMaxIdle,
+		DatabaseTimeOutSecond: dbTimeOutSecond,
+		DatabaseLifeTimeMs:    dbLifeTimeMs,
+		DatabaseCharset:       os.Getenv("DB_CHARSET"),
 	}
 
 	fmt.Println("config --> ", config)
