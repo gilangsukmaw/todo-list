@@ -13,6 +13,6 @@ RUN go build -o binary
 
 ENTRYPOINT ["/app/binary"]
 
-EXPOSE 8081
+EXPOSE 8080
 
 CMD ["http"]
