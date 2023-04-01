@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
-	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	cfg "gitlab.com/todo-list-app1/todo-list-backend/cfg/env"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/consts"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/entity"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/repositories"
@@ -23,7 +23,7 @@ func NewDoneTodos(
 	return &doneTodo{todoRepo: todoRepo}
 }
 
-func (u *doneTodo) Serve(dctx *fiber.Ctx, cfg *yaml.Config) server.Response {
+func (u *doneTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 	var (
 		ctx = dctx.Context()
 		//logger

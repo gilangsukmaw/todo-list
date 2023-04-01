@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	"github.com/pressly/goose/v3"
-	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
+	cfg "gitlab.com/todo-list-app1/todo-list-backend/cfg/env"
 	"log"
 )
 
@@ -13,14 +13,14 @@ var (
 	dir   = flags.String("dir", "./cfg/db/migrations", "directory with migration files")
 )
 
-func DatabaseMigration(cfg *yaml.Config, args []string) {
+func DatabaseMigration(cfg *cfg.Config, args []string) {
 
 	if args[0] == "-h" || args[0] == "--help" {
 		flags.Usage()
 		return
 	}
 
-	var driver = cfg.DB.Dialect
+	var driver = cfg.DatabaseDialect
 
 	if len(args) > 1 && args[0] == "create" {
 		if err := goose.Run("create", nil, *dir, args[1:]...); err != nil {

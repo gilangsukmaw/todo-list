@@ -6,8 +6,8 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"gitlab.com/todo-list-app1/todo-list-backend/cfg/db"
+	cfg2 "gitlab.com/todo-list-app1/todo-list-backend/cfg/env"
 	"gitlab.com/todo-list-app1/todo-list-backend/cfg/http"
-	"gitlab.com/todo-list-app1/todo-list-backend/cfg/yaml"
 	"gitlab.com/todo-list-app1/todo-list-backend/lib/logger"
 	"log"
 )
@@ -18,7 +18,7 @@ func Start() {
 	logger.LoggerJson()
 
 	//setting config
-	cfg, err := yaml.NewConfig()
+	cfg, err := cfg2.NewDotEnvConfig()
 	if err != nil {
 		panic(err)
 	}
