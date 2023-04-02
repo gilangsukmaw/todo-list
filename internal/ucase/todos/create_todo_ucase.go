@@ -27,9 +27,10 @@ func NewCreateTodo(
 
 func (u *createTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 	var (
-		ctx   = dctx.Context()
-		param = presentations.CreateTodoParam{}
-		err   = dctx.BodyParser(&param)
+		ctx    = dctx.Context()
+		param  = presentations.CreateTodoParam{}
+		userId = fmt.Sprintf(`%v`, dctx.Locals("user_id"))
+		err    = dctx.BodyParser(&param)
 		//logger
 		lf = logger.Field{
 			EventName: "ucase create todo",
@@ -57,7 +58,7 @@ func (u *createTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 
 	err = u.todoRepo.CreateTodo(ctx, entity.Todo{
 		ID:     id.String(),
-		UserId: id.String(),
+		UserId: userId,
 		Title:  param.Title,
 		Color:  helper.RandomColor(),
 		//Status: "done",

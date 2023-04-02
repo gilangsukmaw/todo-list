@@ -7,6 +7,7 @@ import (
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/middlewares"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/repositories"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/server"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/auth"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/contract"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/ping"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/todos"
@@ -19,14 +20,15 @@ func NewRouter(cfg *cfg.Config) *fiber.App {
 
 	//repositories
 	var (
-		//userRepo = repositories.NewUser(db.Db)
+		userRepo = repositories.NewUser(db.Db)
 		todoRepo = repositories.NewTodo(db.Db)
 	)
 
 	//middlewares
 	var (
-		tesMdwr  = middlewares.TesMdwr
-		tesMdwr2 = middlewares.TesMdwr2
+		tesMdwr     = middlewares.TesMdwr
+		tesMdwr2    = middlewares.TesMdwr2
+		BearerToken = middlewares.ValidateJWT
 	)
 
 	//ucase
@@ -37,6 +39,8 @@ func NewRouter(cfg *cfg.Config) *fiber.App {
 		DoneTodoUcase   = todos.NewDoneTodos(todoRepo)
 		UndoneTodoUcase = todos.NewUndoneTodos(todoRepo)
 		DeleteTodoUcase = todos.NewDeleteTodos(todoRepo)
+
+		loginUcase = auth.NewLogin(userRepo)
 	)
 
 	//group
@@ -48,11 +52,14 @@ func NewRouter(cfg *cfg.Config) *fiber.App {
 	//v1.Get("/users", handler(cfg, usersUcase))
 
 	//todo crud
-	v1.Get("/todos", handler(cfg, AllTodosUcase))
-	v1.Post("/todos", handler(cfg, CreateTodoUcase))
-	v1.Put("/todos/done/:id", handler(cfg, DoneTodoUcase))
-	v1.Put("/todos/undone/:id", handler(cfg, UndoneTodoUcase))
-	v1.Delete("/todos/delete/:id", handler(cfg, DeleteTodoUcase))
+	v1.Get("/todos", handler(cfg, AllTodosUcase, BearerToken))
+	v1.Post("/todos", handler(cfg, CreateTodoUcase, BearerToken))
+	v1.Put("/todos/done/:id", handler(cfg, DoneTodoUcase, BearerToken))
+	v1.Put("/todos/undone/:id", handler(cfg, UndoneTodoUcase, BearerToken))
+	v1.Delete("/todos/delete/:id", handler(cfg, DeleteTodoUcase, BearerToken))
+
+	//auth
+	v1.Post("/auth/login", handler(cfg, loginUcase))
 
 	return router
 }

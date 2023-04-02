@@ -24,7 +24,8 @@ func NewDeleteTodos(
 
 func (u *deleteTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 	var (
-		ctx = dctx.Context()
+		ctx    = dctx.Context()
+		userId = fmt.Sprintf(`%v`, dctx.Locals("user_id"))
 		//logger
 		lf = logger.Field{
 			EventName: "ucase todo delete",
@@ -35,7 +36,7 @@ func (u *deleteTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 
 	logrus.WithField("event", log).Info("ucase todo delete")
 
-	todo, err := u.todoRepo.GetTodoStatus(ctx, entity.Todo{ID: id})
+	todo, err := u.todoRepo.GetTodoStatus(ctx, entity.Todo{ID: id, UserId: userId})
 
 	err = u.todoRepo.UpdateTodo(ctx, entity.Todo{Status: "on-progress"}, entity.Todo{ID: id})
 
