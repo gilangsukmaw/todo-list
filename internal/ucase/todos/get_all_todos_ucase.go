@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/sirupsen/logrus"
 	cfg "gitlab.com/todo-list-app1/todo-list-backend/cfg/env"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/entity"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/repositories"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/server"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/contract"
@@ -23,7 +24,8 @@ func NewAllTodos(
 
 func (u *allTodos) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 	var (
-		ctx = dctx.Context()
+		ctx    = dctx.Context()
+		userId = fmt.Sprintf(`%v`, dctx.Locals("user_id"))
 		//logger
 		lf = logger.Field{
 			EventName: "ucase get all todo",
@@ -33,7 +35,7 @@ func (u *allTodos) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 
 	logrus.WithField("event", log).Info("ucase_get_all_todo")
 
-	todos, err := u.todoRepo.GetAllTodo(ctx)
+	todos, err := u.todoRepo.GetAllTodo(ctx, entity.Todo{UserId: userId})
 
 	if err != nil {
 		logrus.WithField("event",

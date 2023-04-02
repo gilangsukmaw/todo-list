@@ -1,6 +1,8 @@
 package entity
 
-import "time"
+import (
+	"time"
+)
 
 type Todo struct {
 	ID        string     `db:"id" json:"id,omitempty"`

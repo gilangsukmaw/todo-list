@@ -7,10 +7,11 @@ import (
 
 type Userer interface {
 	GetAllUser(ctx context.Context) ([]entity.User, error)
+	GetOneUser(ctx context.Context, param interface{}) (*entity.User, error)
 }
 
 type Todoer interface {
-	GetAllTodo(ctx context.Context) ([]entity.Todo, error)
+	GetAllTodo(ctx context.Context, param interface{}) ([]entity.Todo, error)
 	CreateTodo(ctx context.Context, param interface{}) error
 	GetOneTodo(ctx context.Context, param interface{}) (*entity.Todo, error)
 	GetTodoStatus(ctx context.Context, param interface{}) (*entity.Todo, error)

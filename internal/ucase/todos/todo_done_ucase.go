@@ -25,7 +25,8 @@ func NewDoneTodos(
 
 func (u *doneTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 	var (
-		ctx = dctx.Context()
+		ctx    = dctx.Context()
+		userId = fmt.Sprintf(`%v`, dctx.Locals("user_id"))
 		//logger
 		lf = logger.Field{
 			EventName: "ucase todo done",
@@ -36,7 +37,7 @@ func (u *doneTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 
 	logrus.WithField("event", log).Info("ucase todo done")
 
-	todo, err := u.todoRepo.GetTodoStatus(ctx, entity.Todo{ID: id})
+	todo, err := u.todoRepo.GetTodoStatus(ctx, entity.Todo{ID: id, UserId: userId})
 
 	if err != nil {
 		logrus.WithField("event",

@@ -16,10 +16,17 @@ func NewTodo(db *sql.DB) Todoer {
 	return &todo{db: db}
 }
 
-func (r *todo) GetAllTodo(ctx context.Context) ([]entity.Todo, error) {
+func (r *todo) GetAllTodo(ctx context.Context, param interface{}) ([]entity.Todo, error) {
 	result := []entity.Todo{}
 
-	rows, err := r.db.QueryContext(ctx, "SELECT id, title, color, status, created_at, updated_at, deleted_at FROM todos ORDER BY created_at DESC")
+	wheres, vals := helper.QueryWhere(param)
+
+	q := fmt.Sprintf(`
+	SELECT
+    	*
+    FROM todos %s ORDER BY created_at DESC`, wheres)
+
+	rows, err := r.db.QueryContext(ctx, q, vals...)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +36,7 @@ func (r *todo) GetAllTodo(ctx context.Context) ([]entity.Todo, error) {
 	for rows.Next() {
 		var t entity.Todo
 		//err = rows.Scan(&usr)
-		err = rows.Scan(&t.ID, &t.Title, &t.Color, &t.Status, &t.CreatedAt, &t.UpdatedAt, &t.DeletedAt)
+		err = rows.Scan(&t.ID, &t.UserId, &t.Title, &t.Color, &t.Status, &t.CreatedAt, &t.UpdatedAt, &t.DeletedAt)
 		if err != nil {
 			return nil, err
 		}
