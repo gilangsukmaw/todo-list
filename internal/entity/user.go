@@ -1,10 +1,11 @@
 package entity
 
 type User struct {
-	ID       string `json:"id,omitempty"`
-	Username string `json:"username"`
-	Fullname string `json:"full_name"`
-	Email    string `json:"email"`
-	Avatar   string `json:"avatar"`
-	Role     string `json:"role"`
+	ID       string `db:"id" json:"id,omitempty"`
+	Username string `db:"username" json:"username,omitempty"`
+	Fullname string `db:"full_name" json:"full_name,omitempty"`
+	Email    string `db:"email" json:"email,omitempty"`
+	Avatar   string `db:"avatar" json:"avatar,omitempty"`
+	Role     string `db:"role" json:"role,omitempty"`
+	Password string `db:"password" json:"password,omitempty"`
 }
