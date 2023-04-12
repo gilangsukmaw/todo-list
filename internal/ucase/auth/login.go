@@ -67,7 +67,7 @@ func (u *login) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 		return server.Response{Code: 401, Message: "username or password is invalid"}
 	}
 
-	tokenString, err := helper.GenerateJWT(user, cfg.JwtToken, cfg.JwtExpired)
+	tokenString, expiredAt, err := helper.GenerateJWT(user, cfg.JwtToken, cfg.JwtExpired)
 	if err != nil {
 		logrus.WithField("event",
 			lf.Append("generate token got", fmt.Sprintf(`%s`, err))).Error()
@@ -76,5 +76,5 @@ func (u *login) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 
 	logrus.WithField("event", log).Info("succes login")
 
-	return server.Response{Code: 200, Data: dto.LoginDTO(user, tokenString), Message: "ok"}
+	return server.Response{Code: 200, Data: dto.LoginDTO(user, tokenString, expiredAt), Message: "ok"}
 }

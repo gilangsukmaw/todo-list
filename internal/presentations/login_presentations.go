@@ -1,6 +1,9 @@
 package presentations
 
-import "gitlab.com/todo-list-app1/todo-list-backend/internal/entity"
+import (
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/entity"
+	"time"
+)
 
 type LoginPresentation struct {
 	Email    string `json:"email,omitempty"`
@@ -9,5 +12,6 @@ type LoginPresentation struct {
 
 type LoginOutput struct {
 	entity.User
-	Token string `json:"token"`
+	Token     string    `json:"token"`
+	ExpiredAt time.Time `json:"expiredAt"`
 }

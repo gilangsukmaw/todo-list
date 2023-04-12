@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func GenerateJWT(user *entity.User, key string, expiredMinute int) (string, error) {
+func GenerateJWT(user *entity.User, key string, expiredMinute int) (string, *time.Time, error) {
 	// Declare the expiration time of the token
 	expirationTime := time.Now().Add(time.Duration(expiredMinute) * time.Minute)
 	// Create the JWT claims, which includes the username and expiry time
@@ -27,8 +27,8 @@ func GenerateJWT(user *entity.User, key string, expiredMinute int) (string, erro
 	if err != nil {
 
 		// If there is an error in creating the JWT return an internal server error
-		return "", err
+		return "", nil, err
 	}
 
-	return tokenString, nil
+	return tokenString, &expirationTime, nil
 }
