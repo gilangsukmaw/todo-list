@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TYPE roles AS ENUM ('user', 'admin');
+-- CREATE TYPE roles AS ENUM ('user', 'admin');
 
 
 CREATE TABLE users (

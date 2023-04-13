@@ -10,6 +10,7 @@ import (
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/auth"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/contract"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/ping"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/todo_group"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/ucase/todos"
 )
 
@@ -20,8 +21,9 @@ func NewRouter(cfg *cfg.Config) *fiber.App {
 
 	//repositories
 	var (
-		userRepo = repositories.NewUser(db.Db)
-		todoRepo = repositories.NewTodo(db.Db)
+		userRepo      = repositories.NewUser(db.Db)
+		todoRepo      = repositories.NewTodo(db.Db)
+		todoGroupRepo = repositories.NewTodoGroup(db.Db)
 	)
 
 	//middlewares
@@ -34,13 +36,14 @@ func NewRouter(cfg *cfg.Config) *fiber.App {
 	//ucase
 	var (
 		pingUcase       = ping.NewPing()
-		AllTodosUcase   = todos.NewAllTodos(todoRepo)
-		CreateTodoUcase = todos.NewCreateTodo(todoRepo)
+		AllTodosUcase   = todos.NewAllTodos(todoRepo, todoGroupRepo)
+		CreateTodoUcase = todos.NewCreateTodo(todoRepo, todoGroupRepo)
 		DoneTodoUcase   = todos.NewDoneTodos(todoRepo)
 		UndoneTodoUcase = todos.NewUndoneTodos(todoRepo)
 		DeleteTodoUcase = todos.NewDeleteTodos(todoRepo)
 
-		loginUcase = auth.NewLogin(userRepo)
+		todoGroupsUcase = todo_group.NewAllTodoGroup(todoRepo, todoGroupRepo)
+		loginUcase      = auth.NewLogin(userRepo)
 	)
 
 	//group
@@ -51,9 +54,12 @@ func NewRouter(cfg *cfg.Config) *fiber.App {
 
 	//v1.Get("/users", handler(cfg, usersUcase))
 
+	//todo group
+	v1.Get("/todo-groups", handler(cfg, todoGroupsUcase, BearerToken))
+
 	//todo crud
-	v1.Get("/todos", handler(cfg, AllTodosUcase, BearerToken))
-	v1.Post("/todos", handler(cfg, CreateTodoUcase, BearerToken))
+	v1.Get("/todos/:unique", handler(cfg, AllTodosUcase, BearerToken))
+	v1.Post("/todos/:unique", handler(cfg, CreateTodoUcase, BearerToken))
 	v1.Put("/todos/done/:id", handler(cfg, DoneTodoUcase, BearerToken))
 	v1.Put("/todos/undone/:id", handler(cfg, UndoneTodoUcase, BearerToken))
 	v1.Delete("/todos/delete/:id", handler(cfg, DeleteTodoUcase, BearerToken))

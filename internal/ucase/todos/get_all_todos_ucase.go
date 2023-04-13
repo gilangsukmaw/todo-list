@@ -13,19 +13,25 @@ import (
 )
 
 type allTodos struct {
-	todoRepo repositories.Todoer
+	todoRepo      repositories.Todoer
+	todoGroupRepo repositories.TodoGrouper
 }
 
 func NewAllTodos(
 	todoRepo repositories.Todoer,
+	todoGroupRepo repositories.TodoGrouper,
 ) contract.UseCase {
-	return &allTodos{todoRepo: todoRepo}
+	return &allTodos{
+		todoRepo:      todoRepo,
+		todoGroupRepo: todoGroupRepo,
+	}
 }
 
 func (u *allTodos) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 	var (
 		ctx    = dctx.Context()
 		userId = fmt.Sprintf(`%v`, dctx.Locals("user_id"))
+		unique = dctx.Params("unique")
 		//logger
 		lf = logger.Field{
 			EventName: "ucase get all todo",
@@ -35,7 +41,27 @@ func (u *allTodos) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 
 	logrus.WithField("event", log).Info("ucase_get_all_todo")
 
-	todos, err := u.todoRepo.GetAllTodo(ctx, entity.Todo{UserId: userId})
+	if unique == "" {
+		logrus.WithField("event",
+			lf.Append("get todos got error", "unique is empty"))
+		return server.Response{Code: 500, Message: fmt.Sprintf(`%s`, "unique is empty")}
+	}
+
+	todoGroup, err := u.todoGroupRepo.GetTodoGroupId(ctx, entity.TodoGroup{UserId: userId, Unique: unique})
+
+	if err != nil {
+		logrus.WithField("event",
+			lf.Append("get todos got error", fmt.Sprintf(`%s`, err))).Error()
+		return server.Response{Code: 500, Message: fmt.Sprintf(`%s`, err)}
+	}
+
+	if todoGroup == nil {
+		logrus.WithField("event",
+			lf.Append("get todos got error", fmt.Sprintf(`%s`, err))).Error()
+		return server.Response{Code: 404, Message: fmt.Sprintf(`%s`, "no todo groups found with that unique name")}
+	}
+
+	todos, err := u.todoRepo.GetAllTodo(ctx, entity.Todo{UserId: userId, GroupId: todoGroup.ID})
 
 	if err != nil {
 		logrus.WithField("event",

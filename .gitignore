@@ -1,5 +1,6 @@
 .idea
 .env
+.env.development
 cfg/yaml/app.yaml
 /gin-bin
 vendor
