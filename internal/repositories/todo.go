@@ -36,7 +36,7 @@ func (r *todo) GetAllTodo(ctx context.Context, param interface{}) ([]entity.Todo
 	for rows.Next() {
 		var t entity.Todo
 		//err = rows.Scan(&usr)
-		err = rows.Scan(&t.ID, &t.UserId, &t.Title, &t.Color, &t.Status, &t.CreatedAt, &t.UpdatedAt, &t.DeletedAt)
+		err = rows.Scan(&t.ID, &t.GroupId, &t.UserId, &t.Title, &t.Color, &t.Status, &t.CreatedAt, &t.UpdatedAt, &t.DeletedAt)
 		if err != nil {
 			return nil, err
 		}

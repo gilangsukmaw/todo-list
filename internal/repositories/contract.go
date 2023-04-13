@@ -18,3 +18,8 @@ type Todoer interface {
 	UpdateTodo(ctx context.Context, param interface{}, where interface{}) error
 	DeleteTodo(ctx context.Context, param interface{}) error
 }
+
+type TodoGrouper interface {
+	GetTodoGroupId(ctx context.Context, param interface{}) (*entity.TodoGroup, error)
+	GetAllTodoGroup(ctx context.Context, param interface{}) ([]entity.TodoGroup, error)
+}
