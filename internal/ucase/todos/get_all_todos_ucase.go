@@ -55,6 +55,12 @@ func (u *allTodos) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 		return server.Response{Code: 500, Message: fmt.Sprintf(`%s`, err)}
 	}
 
+	if todoGroup == nil {
+		logrus.WithField("event",
+			lf.Append("get todos got error", fmt.Sprintf(`%s`, err))).Error()
+		return server.Response{Code: 404, Message: fmt.Sprintf(`%s`, "no todo groups found with that unique name")}
+	}
+
 	todos, err := u.todoRepo.GetAllTodo(ctx, entity.Todo{UserId: userId, GroupId: todoGroup.ID})
 
 	if err != nil {

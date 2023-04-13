@@ -48,7 +48,7 @@ func (r *todoGroup) GetAllTodoGroup(ctx context.Context, param interface{}) ([]e
 
 	q := fmt.Sprintf(`
 	SELECT
-    	id, title, created_at, updated_at
+    	id, title, unique_name,created_at, updated_at
     FROM todo_groups %s ORDER BY created_at DESC`, wheres)
 
 	rows, err := r.db.QueryContext(ctx, q, vals...)
@@ -61,7 +61,7 @@ func (r *todoGroup) GetAllTodoGroup(ctx context.Context, param interface{}) ([]e
 	for rows.Next() {
 		var t entity.TodoGroup
 		//err = rows.Scan(&usr)
-		err = rows.Scan(&t.ID, &t.UserId, &t.Title, &t.CreatedAt, &t.UpdatedAt)
+		err = rows.Scan(&t.ID, &t.Title, &t.Unique, &t.CreatedAt, &t.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}

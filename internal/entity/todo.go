@@ -10,8 +10,8 @@ type TodoGroup struct {
 	Title     string     `db:"title" json:"title,omitempty"`
 	Color     *string    `db:"color" json:"color,omitempty"`
 	Unique    string     `db:"unique_name" json:"unique_name,omitempty"`
-	CreatedAt time.Time  `db:"created_at" json:"createdAt,omitempty"`
-	UpdatedAt time.Time  `db:"updated_at" json:"updatedAt,omitempty"`
+	CreatedAt *time.Time `db:"created_at" json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `db:"updated_at" json:"updatedAt,omitempty"`
 	DeletedAt *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
 }
 
@@ -24,5 +24,5 @@ type Todo struct {
 	Color     string     `db:"color" json:"color,omitempty"`
 	CreatedAt time.Time  `db:"created_at" json:"createdAt,omitempty"`
 	UpdatedAt time.Time  `db:"updated_at" json:"updatedAt,omitempty"`
-	DeletedAt *time.Time `db:"updated_at" json:"updatedAt,omitempty"`
+	DeletedAt *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
 }
