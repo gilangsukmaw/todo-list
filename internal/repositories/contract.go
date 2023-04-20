@@ -23,4 +23,5 @@ type Todoer interface {
 type TodoGrouper interface {
 	GetTodoGroupId(ctx context.Context, param interface{}) (*entity.TodoGroup, error)
 	GetAllTodoGroup(ctx context.Context, param interface{}) ([]entity.TodoGroup, error)
+	CreateTodoGroup(ctx context.Context, param interface{}) error
 }

@@ -42,8 +42,9 @@ func NewRouter(cfg *cfg.Config) *fiber.App {
 		UndoneTodoUcase = todos.NewUndoneTodos(todoRepo)
 		DeleteTodoUcase = todos.NewDeleteTodos(todoRepo)
 
-		todoGroupsUcase = todo_group.NewAllTodoGroup(todoRepo, todoGroupRepo)
-		loginUcase      = auth.NewLogin(userRepo)
+		todoGroupsUcase      = todo_group.NewAllTodoGroup(todoRepo, todoGroupRepo)
+		createTodoGroupUcase = todo_group.NewCreateTodoGroup(todoGroupRepo)
+		loginUcase           = auth.NewLogin(userRepo)
 	)
 
 	//group
@@ -56,6 +57,7 @@ func NewRouter(cfg *cfg.Config) *fiber.App {
 
 	//todo group
 	v1.Get("/todo-groups", handler(cfg, todoGroupsUcase, BearerToken))
+	v1.Post("/todo-groups", handler(cfg, createTodoGroupUcase, BearerToken))
 
 	//todo crud
 	v1.Get("/todos/:unique", handler(cfg, AllTodosUcase, BearerToken))

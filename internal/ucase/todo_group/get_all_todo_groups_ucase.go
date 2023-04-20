@@ -58,10 +58,20 @@ func (u *allTodoGroups) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response 
 			return server.Response{Code: 500, Message: fmt.Sprintf(`%s`, err)}
 		}
 
+		doneTodos, err := u.todoRepo.CountTodo(ctx, entity.Todo{GroupId: todoGroup.ID, Status: "done"})
+
+		if err != nil {
+			logrus.WithField("event",
+				lf.Append("count todos got error", fmt.Sprintf(`%s`, err))).Error()
+			return server.Response{Code: 500, Message: fmt.Sprintf(`%s`, err)}
+		}
+
 		tmp.ID = todoGroup.ID
 		tmp.Title = todoGroup.Title
 		tmp.UniqueName = todoGroup.Unique
 		tmp.TodoTotal = todos
+		tmp.TodoDone = doneTodos
+		tmp.TodoDonePercent = fmt.Sprintf(`%v`, float64(doneTodos)/float64(todos)*100)
 
 		resp = append(resp, tmp)
 	}

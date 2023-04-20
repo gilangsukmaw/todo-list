@@ -71,18 +71,19 @@ func (r *todoGroup) GetAllTodoGroup(ctx context.Context, param interface{}) ([]e
 	return result, err
 }
 
-//func (r *todoGroup) CreateTodo(ctx context.Context, param interface{}) error {
-//	fields, vals := helper.QueryInsert(param)
-//
-//	q := fmt.Sprintf(`INSERT INTO todos %s`, fields)
-//
-//	_, err := r.db.ExecContext(ctx, q, vals...)
-//	if err != nil {
-//		return err
-//	}
-//
-//	return nil
-//}
+func (r *todoGroup) CreateTodoGroup(ctx context.Context, param interface{}) error {
+	fields, vals := helper.QueryInsert(param)
+
+	q := fmt.Sprintf(`INSERT INTO todo_groups %s`, fields)
+
+	_, err := r.db.ExecContext(ctx, q, vals...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 //
 //func (r *todoGroup) UpdateTodo(ctx context.Context, param interface{}, where interface{}) error {
 //	fields, vals := helper.QueryUpdate(param, where)

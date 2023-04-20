@@ -27,7 +27,6 @@ func (r *todo) GetAllTodo(ctx context.Context, param interface{}) ([]entity.Todo
     	group_id,
     	user_id,
     	title,
-    	color,
     	status,
     	created_at,
     	updated_at
@@ -43,7 +42,7 @@ func (r *todo) GetAllTodo(ctx context.Context, param interface{}) ([]entity.Todo
 	for rows.Next() {
 		var t entity.Todo
 		//err = rows.Scan(&usr)
-		err = rows.Scan(&t.ID, &t.GroupId, &t.UserId, &t.Title, &t.Color, &t.Status, &t.CreatedAt, &t.UpdatedAt)
+		err = rows.Scan(&t.ID, &t.GroupId, &t.UserId, &t.Title, &t.Status, &t.CreatedAt, &t.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -64,7 +63,6 @@ func (r *todo) GetOneTodo(ctx context.Context, param interface{}) (*entity.Todo,
     	user_id,
     	title,
     	status,
-    	color,
     	created_at
     FROM todos %s ORDER BY created_at DESC  LIMIT 1`, wheres)
 
@@ -73,7 +71,6 @@ func (r *todo) GetOneTodo(ctx context.Context, param interface{}) (*entity.Todo,
 		&result.UserId,
 		&result.Title,
 		&result.Status,
-		&result.Color,
 		&result.CreatedAt,
 	)
 
@@ -112,6 +109,8 @@ func (r *todo) CreateTodo(ctx context.Context, param interface{}) error {
 	fields, vals := helper.QueryInsert(param)
 
 	q := fmt.Sprintf(`INSERT INTO todos %s`, fields)
+
+	fmt.Println("ini q --> ", q)
 
 	_, err := r.db.ExecContext(ctx, q, vals...)
 	if err != nil {

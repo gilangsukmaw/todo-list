@@ -1,4 +1,4 @@
-package todos
+package todo_group
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	cfg "gitlab.com/todo-list-app1/todo-list-backend/cfg/env"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/entity"
+	"gitlab.com/todo-list-app1/todo-list-backend/internal/helper"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/presentations"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/repositories"
 	"gitlab.com/todo-list-app1/todo-list-backend/internal/server"
@@ -14,38 +15,32 @@ import (
 	"gitlab.com/todo-list-app1/todo-list-backend/lib/logger"
 )
 
-type createTodo struct {
-	todoRepo      repositories.Todoer
+type createTodoGroup struct {
 	todoGroupRepo repositories.TodoGrouper
 }
 
-func NewCreateTodo(
-	todoRepo repositories.Todoer,
+func NewCreateTodoGroup(
 	todoGroupRepo repositories.TodoGrouper,
 ) contract.UseCase {
-	return &createTodo{
-		todoRepo:      todoRepo,
+	return &createTodoGroup{
 		todoGroupRepo: todoGroupRepo,
 	}
 }
 
-func (u *createTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
+func (u *createTodoGroup) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 	var (
 		ctx    = dctx.Context()
-		param  = presentations.CreateTodoParam{}
+		param  = presentations.CreateTodoGroupParam{}
 		userId = fmt.Sprintf(`%v`, dctx.Locals("user_id"))
 		err    = dctx.BodyParser(&param)
-		unique = dctx.Params("unique")
 		//logger
 		lf = logger.Field{
-			EventName: "ucase create todo",
+			EventName: "ucase create todo group",
 		}
 		log = logger.NewLoggerField(lf)
 	)
 
 	logrus.WithField("event", log).Info("ucase create todo")
-
-	//time.Sleep(3 * time.Second)
 
 	if err != nil {
 		logrus.WithField("event",
@@ -59,28 +54,13 @@ func (u *createTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 		return server.Response{Code: 400, Message: "title cannot be empty"}
 	}
 
-	todoGroup, err := u.todoGroupRepo.GetTodoGroupId(ctx, entity.TodoGroup{UserId: userId, Unique: unique})
-
-	if err != nil {
-		logrus.WithField("event",
-			lf.Append("get todo group got error", fmt.Sprintf(`%s`, err))).Error()
-		return server.Response{Code: 500, Message: fmt.Sprintf(`%s`, err)}
-	}
-
-	if todoGroup == nil {
-		logrus.WithField("event",
-			lf.Append("get todo group got error", fmt.Sprintf(`%s`, err))).Error()
-		return server.Response{Code: 404, Message: fmt.Sprintf(`%s`, "no todo groups found with that unique name")}
-	}
-
 	id := uuid.New()
 
-	err = u.todoRepo.CreateTodo(ctx, entity.Todo{
-		ID:      id.String(),
-		UserId:  userId,
-		Title:   param.Title,
-		GroupId: todoGroup.ID,
-		//Status: "done",
+	err = u.todoGroupRepo.CreateTodoGroup(ctx, entity.TodoGroup{
+		ID:     id.String(),
+		UserId: userId,
+		Title:  param.Title,
+		Unique: helper.GenerateUniqueName(),
 	})
 
 	if err != nil {
@@ -89,13 +69,5 @@ func (u *createTodo) Serve(dctx *fiber.Ctx, cfg *cfg.Config) server.Response {
 		return server.Response{Code: 500, Message: fmt.Sprintf(`%s`, err)}
 	}
 
-	todo, err := u.todoRepo.GetOneTodo(ctx, entity.Todo{ID: id.String()})
-
-	if err != nil {
-		logrus.WithField("event",
-			lf.Append("get todo got error", fmt.Sprintf(`%s`, err))).Error()
-		return server.Response{Code: 500, Message: fmt.Sprintf(`%s`, err)}
-	}
-
-	return server.Response{Code: 201, Data: todo, Message: "Created"}
+	return server.Response{Code: 201, Message: "Created"}
 }
