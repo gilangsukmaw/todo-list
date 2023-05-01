@@ -8,8 +8,11 @@ COPY . .
 
 RUN go mod tidy
 
+RUN go mod tidy
+
 RUN go build -o binary
 
+RUN docker system prune
 
 ENTRYPOINT ["/app/binary"]
 
