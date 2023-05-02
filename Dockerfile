@@ -1,7 +1,5 @@
 FROM golang:alpine
 
-RUN docker system prune
-
 RUN apk update && apk add --no-cache git
 
 WORKDIR /app
